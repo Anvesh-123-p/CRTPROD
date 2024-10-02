@@ -1,0 +1,119 @@
+.box{
+    height: 100%;
+    width: 40%;
+    position: fixed;
+    background-color: #2E3977;
+    overflow: hidden;
+    border-top-right-radius: 100% ;
+    border-bottom-right-radius:100% ;
+    border-left: 0;
+
+    
+
+}
+.p{
+    padding-left:50%;
+}
+.image{
+margin-left: -120px;
+
+width: 1%;
+
+}
+
+.h1{
+padding-top:5%;
+padding-left: 55%;
+}
+
+.h5{
+padding-left:60% ;
+margin-bottom: 3%;
+}
+#exampleInputEmail1{
+width: 40%;
+margin-left: 50%;
+
+}
+#label{
+margin-left:50% ;
+}
+
+.button{
+margin-left: 50%;
+width:40%;
+margin-bottom: 1%;
+margin-top: 1%;
+}
+
+#pass{
+margin-left:63%;
+color: black;
+
+}
+.c{
+    margin-top:0.4%;
+}
+.red{
+color: red;
+margin-left:65%;
+
+}
+
+.green{
+color: green;
+margin-left: 65%;
+}
+#acc2{margin-left: 68%;}
+#acc{margin-left: 65%;}
+
+#toggle{
+margin-left: 50%;
+outline: 1px solid;
+
+}
+
+@media screen and (max-width:820px) {
+.box{
+    display: none;
+}
+
+.h1{
+    margin-left: 20%;
+}
+
+.h5{
+    margin-left:25% ;
+    margin-bottom: 3%;
+}
+#toggle{
+    margin-left: 30%;
+    outline: 1px solid;
+    
+}
+
+#pass{
+    margin-left:31%;
+    color: black;
+   
+}
+#exampleInputEmail1{
+    width: 70%;
+    margin-left:15%;
+    
+}
+#label{
+    margin-left:16% ;
+}
+
+#acc{
+    margin-top: 4%;
+    margin-left: 22%;}
+
+    .button{
+        margin-left: 15%;
+        width:70%;
+        margin-bottom: 1%;
+        margin-top: 5%;
+    }
+}

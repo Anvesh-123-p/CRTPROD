@@ -1,0 +1,46 @@
+
+.box{
+    height: 100%;
+    width: 50%;
+    position: fixed;
+    background-color: #2E3977;
+    overflow: hidden;
+    border-top-left-radius: 100% ;
+    border-bottom-left-radius:100% ;
+    border-left: 0;
+    margin-left: 55%;
+    
+    
+
+    
+
+}
+.body{
+    height: 100vh;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    padding-left: 2%;
+    margin-top :1%;
+    margin-bottom:1%;
+   
+}
+
+.image{
+
+    margin-top: 50px;
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
+    
+   
+}
+#exampleInput{
+    width: 49%;
+    
+    
+}
+.buttons{
+    width: 48.5%;
+    margin-left: 0.5%;
+    margin-top: 2%;
+  
+}

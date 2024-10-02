@@ -1,0 +1,183 @@
+.nav_bar {
+    background-color: #2E3977; 
+}
+
+.navbar_nav .nav_item {
+    margin-left: 5%;
+}
+
+.navbar_nav .nav_item:last-child {
+    margin-left: 5%;
+}
+
+.navbar_nav .nav_link {
+    color: white; 
+    padding: 0.5rem 1rem; 
+    border-radius: 0.25rem; 
+    transition: all 0.3s ease; 
+}
+
+.nav_bar img {
+    width: 50px;
+    height: 50px;
+    margin-left: 1rem; 
+}
+
+.profile_img {
+    width: 200px;
+    height: 200px;
+    object-fit: cover; 
+}
+
+.dropdown_menu {
+    left: -200px; 
+    right: auto;
+}
+
+.navbar {
+    transition: height 0.3s ease;
+}
+
+.navbar_collapse {
+    flex-grow: 1;
+}
+
+.navbar_toggler {
+    border: white;
+    outline: none;
+}
+.nav_link:hover
+{
+    color:black;
+}
+
+.cardcontainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 100px;
+    text-align: center;
+}
+
+.card {
+    position: relative; 
+    width: 40%; 
+    border: 3px solid black; 
+    border-radius: 8px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    box-sizing: border-box;
+    background-color:#fafafa; 
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.card_body {
+    flex: 1; 
+}
+
+.card_title {
+    margin: 0;
+    font-size: 2.5rem;
+    text-align: center;
+    margin-bottom: 15px; 
+}
+
+.card_text {
+    font-size: 1.25rem;
+    color: #666;
+    margin-bottom: 15px; 
+}
+
+.card_content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.faculties_container {
+    display: flex;
+    flex-wrap: wrap; 
+    gap: 30px; 
+    justify-content: center;
+    margin-bottom: 20px; 
+}
+
+.faculty_item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 15px; 
+}
+
+.faculty_value {
+    margin-top: 5px;
+    font-size: 3rem; 
+    color: #0000FF;
+}
+
+.status_container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px; 
+    margin-top: 15px; 
+}
+
+.status_container label {
+    font-weight: bold;
+    margin: 0;
+    font-size: 1rem; 
+}
+
+.status_container p {
+    margin: 0;
+    font-size: 1rem; 
+    color: #666;
+}
+
+.btn {
+    padding: 8px 16px;
+    font-size: 0.875rem;
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background-color: #007bff;
+}
+
+.btn-success {
+    background-color: #28a745;
+}
+
+@media (max-width: 768px) {
+    .cardcontainer {
+        flex-direction: column;
+        margin-top: 50px;
+        padding: 0 10px; 
+    }
+    .card {
+        width: 100%; 
+        margin-bottom: 20px;
+        padding: 10px; 
+    }
+    .card_title {
+        font-size: 2rem; 
+        margin-bottom: 10px;
+    }
+    .card_text {
+        font-size: 1rem; 
+        margin-bottom: 10px; 
+    }
+    .faculty_value {
+        font-size: 2rem;
+    }
+    .status_container p {
+        font-size: 0.875rem;
+    }
+}

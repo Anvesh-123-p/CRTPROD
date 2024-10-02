@@ -1,0 +1,85 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+.formcontainer {
+    width: 35vw;
+    min-width: 200px;
+    padding: 20px;
+    margin-left: 30vw;
+    border-color: black;
+  }
+  
+  .myform {
+    background-color: white;
+    padding: 20px;
+    border-radius: 13px;
+    box-shadow: 0 4px 8px skyblue;
+  }
+  
+  .formgroup {
+    margin-bottom: 15px;
+    box-shadow: skyblue;
+  }
+  
+  .formgroup label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  .required {
+    color: red;
+  }
+  
+  .formgroup input, .formgroup select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    border-color: skyblue;
+
+  }
+  .formgroup input:hover, .formgroup select:hover {
+    border-color: skyblue;
+    box-shadow: 0 0 8px skyblue;
+  }
+  
+  .buttongroup {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+  
+  .backbtn, .createbtn {
+    width: 40%;
+    padding: 10px;
+    background-color: #eef1f5;
+    color: rgb(6, 1, 1);
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+  }
+  
+  .backbtn:hover, .createbtn:hover {
+    border-color: #0bb7a8;
+  }
+  
+  .createbtn {
+    background-color: #33e718;
+    color:white;
+  }
+  
+  .createbtn:hover {
+    border-color: #2f98ab;
+  }
+  @media (max-width: 768px) {
+    .formcontainer {
+      width: 80vw;
+      margin-left: 10vw;
+    }
+  }
+  
+
