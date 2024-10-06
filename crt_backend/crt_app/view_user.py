@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
 from .models import *
-from .serializers import UserSerializer
+from .serializers import UserSerializer, SubjectSerializer
 import smtplib
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
@@ -84,6 +84,15 @@ class UserView(APIView):
 
             )
             serializer = UserSerializer(queryset, many=True)
+            for i in serializer.data:
+                item30 = Subject.objects.filter(faculty_id=i['id'])
+                serializere = SubjectSerializer(item30,many=True)
+                l=[]
+                for j in serializere.data:
+                    l.append(j['name'])
+                i['subjects']=l
+
+
             return Response({"status": "success", "data": serializer.data}, status=200)
 
         # Filter by specific fields
@@ -136,6 +145,7 @@ class UserView(APIView):
 
                 hod = User.objects.get(user_type='HOD', dept=data["dept"])
                 print(hod.email)
+
                 Approval.objects.create(
                     user_email=data["email"],
                     user_name=data["name"],
@@ -246,7 +256,7 @@ class UserView(APIView):
         elif param.get('email'):
             item = get_object_or_404(User, email=param.get('email'))
         item.delete()
-        return Response({"status": "success", "data": "Item Deleted"}, status=200)
+        return Response({"status": "success", "data": "User Succesfully Deleted"}, status=200)
 
 
 

@@ -36,5 +36,6 @@ class LessonPlanSerializer(serializers.ModelSerializer):
 class ApprovalSerializer(serializers.ModelSerializer):
     class Meta:
         model = Approval
+        depth=1
         fields = "__all__"
 

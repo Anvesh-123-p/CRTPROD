@@ -18,7 +18,9 @@ const Subject_view = () => {
     const[showForm,setShowForm]=useState(false);
     const[subname,setsubname]=useState(false);
     const[classes,setclasses]=useState([])
+    const [fac,setfac]=useState([]);
     const [clsid,setclsid]=useState();
+    const [facid,setfacid]=useState();
     const[Search,setSearch]=useState('')
     const[s,sets]=useState(false)
 
@@ -34,7 +36,7 @@ let url ="http://localhost:8000/api/subjects/";
         let data={
             
           "name": subname,
-           "faculty_id": localdata.id,
+           "faculty_id": facid,
         "class_id": clsid,
  
        
@@ -44,7 +46,7 @@ let url ="http://localhost:8000/api/subjects/";
 
         axios.post(url,data).then(
             (response)=>{
-                console.log(response.data)
+                console.log("Subject Created")
   
               }
             
@@ -62,6 +64,11 @@ let url ="http://localhost:8000/api/subjects/";
         console.log(e.target.value)
         setclsid(e.target.value)
       }
+      const Facid=(e)=>{
+        console.log(e)
+        console.log(e.target.value)
+        setfacid(e.target.value)
+      }
       const logout=()=>{
         localStorage.clear()
         setTimeout(() => {
@@ -75,13 +82,17 @@ let url ="http://localhost:8000/api/subjects/";
         const localdata = JSON.parse(localStorage.getItem("token"));
         console.log(localdata.dept)
         let classesurl="http://localhost:8000/api/class/?dept="+localdata.dept
-        console.log(classesurl)
+        let facurl="http://localhost:8000/api/users/?user_type=FAC&dept="+localdata.dept
 
 
         axios.get(classesurl).then((response)=>{
               if(response.data.data.length!=0)
             setclasses(response.data.data)
           })
+          axios.get(facurl).then((response)=>{
+            if(response.data.data.length!=0)
+          setfac(response.data.data)
+        })
     }
     const localdata = JSON.parse(localStorage.getItem("token"));
 
@@ -112,13 +123,19 @@ let url ="http://localhost:8000/api/subjects/";
             {<div class="row g-5 mb-3">
                 <div class="col ">
                     <label>Subject Name</label>
-                    <input type="text" className={`form-control ${styles.input}`}  onChange = {(e)=>{subjectname(e)}}  placeholder="Company name" aria-label="Company name"/>
+                    <input type="text" className={`form-control ${styles.input}`}  onChange = {(e)=>{subjectname(e)}}  placeholder="Subject name" aria-label="Company name"/>
                 </div>
                 
                 <select id="inputState"onChange={(e)=>{Clsid(e)}}>
                 <option defaultValue>Class Name</option>
                 {classes.map((x)=>(
                 <option value={x.class_id}>{x.dept}_{x.sem}_{x.sec}</option>
+                ))}
+                </select>
+                <select id="inputState"onChange={(e)=>{Facid(e)}}>
+                <option defaultValue>Faculty</option>
+                {fac.map((x)=>(
+                <option value={x.id}>{x.name}</option>
                 ))}
                 </select>
               
@@ -128,7 +145,7 @@ let url ="http://localhost:8000/api/subjects/";
            
            
                 
-            <button className={styles.button} onClick={handleClose} >Submit</button>
+            <button className={styles.button} onClick={handleClose} >Submit sub</button>
        
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
         
@@ -259,7 +276,7 @@ let url ="http://localhost:8000/api/subjects/";
                 </tbody>
             </table>
 
-            <div className={styles.page}>
+            {/* <div className={styles.page}>
                 <nav aria-label="Page navigation example">
                     <ul className="pagination justify-content-center mt-4">
                         <li className="page-item disabled">
@@ -273,7 +290,7 @@ let url ="http://localhost:8000/api/subjects/";
                         </li>
                     </ul>
                 </nav>
-            </div>
+            </div> */}
         </div>
     );
 };

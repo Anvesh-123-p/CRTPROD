@@ -210,7 +210,7 @@ console.log(data)
                 <label htmlFor="inputState" className="form-label ">College Name</label>
                 <select id="inputState" onChange={(e)=>{Clgid(e)}} className="form-select border border-dark" required>
                 
-                <option defaultValue>Select COllege name</option>
+                <option defaultValue>College Name</option>
                 {colleges.map((x)=>(
                 <option value={x.id}>{x.name}</option>
                 ))}
@@ -260,11 +260,12 @@ console.log(data)
               <label htmlFor="exampleInputPassword1" id={styles.labels} className="form-label">Roll Number</label>
               <input type="text" className="form-control border border-dark"  onChange={(e)=>{Roll_number(e)}} placeholder='Roll Number' id={styles.exampleInput}  required/>
             </div>}
-            <Link className="form-check-label" id={styles.acc2}  htmlFor="exampleCheck1" to="/login/">Click Here to Login </Link>
 
             
-            <button type="submit"  className={`btn btn-dark ${styles.buttons}`}>Submit</button>
+            <button type="submit"  className={`btn btn-primary ${styles.buttons}`}>Submit</button>
             </form>
+            <Link className="form-check-label" id={styles.acc2}  htmlFor="exampleCheck1" to="/login/">Click Here to Navigate To Login Page </Link>
+
             </div>
         </div>
     );

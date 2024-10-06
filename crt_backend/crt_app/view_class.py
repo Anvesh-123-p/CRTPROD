@@ -94,7 +94,8 @@ class ClassDetailView(APIView):
             return Response({"error": "class_id is required."}, status=status.HTTP_400_BAD_REQUEST)
         try:
             class_instance = Class.objects.get(class_id=class_id)
+            class_name=str(class_instance.sem)+" - "+class_instance.dept+" - "+class_instance.sec
             class_instance.delete()
-            return Response({"status": "success", "data": "class with id "+class_id+" id deleted succesfully"}, status=200)
+            return Response({"status": "success", "data": "class with name "+class_name+" deleted succesfully"}, status=200)
         except Class.DoesNotExist:
             return Response({"error": "Class not found."}, status=status.HTTP_404_NOT_FOUND)

@@ -139,16 +139,19 @@ const handleSubmit=(e)=>{
                     <div className={`collapse navbar-collapse ${styles.collapse}`} id="navbarSupportedContent">
       <ul className={`navbar-nav me-auto mb-2 mb-lg-0 ${styles.navbar_nav}`}>
         <li className={`nav-item ${styles.nav_item}`}>
-          <Link to="/Faculty/home" className={`nav-link ${styles.nav_link}`} aria-current="page">Home</Link>
+          <Link to="/HOD/home" className={`nav-link ${styles.nav_link}`} aria-current="page">Home</Link>
         </li>
         <li className={`nav-item ${styles.nav_item}`}>
-          <Link to="/Faculty/Class_View" className={`nav-link ${styles.nav_link}`}>Classes</Link>
+          <Link to="/HOD/Class_View" className={`nav-link ${styles.nav_link}`}>Classes</Link>
         </li>
         <li className={`nav-item ${styles.nav_item}`}>
-          <Link to="/Faculty/Faculty_View" className={`nav-link ${styles.nav_link}`}>Faculty</Link>
+          <Link to="/HOD/Faculty_View" className={`nav-link ${styles.nav_link}`}>Faculty</Link>
         </li>
         <li className={`nav-item ${styles.nav_item}`}>
-          <Link to="/Faculty/Subject_view" className={`nav-link ${styles.nav_link}`}>Subjects</Link>
+          <Link to="/HOD/Subject_view" className={`nav-link ${styles.nav_link}`}>Subjects</Link>
+        </li>
+        <li className={`nav-item ${styles.nav_item}`}>
+          <Link to="/Hod/Approval" className={`nav-link ${styles.nav_link}`}>Approval</Link>
         </li>
         
       </ul>

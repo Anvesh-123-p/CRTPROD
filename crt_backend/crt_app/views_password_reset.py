@@ -31,9 +31,14 @@ def request_password_reset( email):
         try:
                 
             user = User.objects.get(email=email)
-            print(user)
+            if not email:
+                return Response(
+                    {"status": "error", "message": "User email is required"}, 
+                    status=status.HTTP_400_BAD_REQUEST
+                )
         except User.DoesNotExist:
-            raise ValidationError("No user with this email address exists.")
+            # raise ValidationError("No user with this email address exists.")
+            return Response({"status": "error", "message": "No user with this email address exists."}, status=400)
         sent=False
         reset_code = generate_reset_code()
         user.reset_password = reset_code
@@ -48,7 +53,9 @@ def request_password_reset( email):
         if sent:
             return "Reset code sent to email."
         else:
-            raise ValidationError(" email is not sent Please try again.")
+            # raise ValidationError(" email is not sent Please try again.")
+            return Response({"status": "error", "message": "email is not sent Please try again."}, status=400)
+
 
 def validate_reset_code( email, entered_code):
         print("enetred code")
@@ -81,11 +88,12 @@ class PasswordResetView(APIView):
     def get(self, request):
         email = request.query_params.get('email')
         if email:
-            try:
-                message = request_password_reset(email)
-                return Response({"message": message}, status=status.HTTP_200_OK)
-            except ValidationError as e:
-                return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            
+            message = request_password_reset(email)
+
+
+            return Response({"message": message}, status=status.HTTP_200_OK)
+           
         return Response({"error": "Email is required."}, status=status.HTTP_400_BAD_REQUEST)
 
     def post(self, request):

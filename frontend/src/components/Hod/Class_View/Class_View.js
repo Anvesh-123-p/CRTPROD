@@ -13,7 +13,9 @@ import {
   } from "@mui/material";
 const Class_View = () => {
 
-  
+  const[showreje,setShowreje]=useState(false);
+  const[reid,setreid]=useState('0');
+
   const[d,setd]=useState([]);
   const[showForm,setShowForm]=useState(false);
   const[semestername,setsemestername]=useState(false);
@@ -82,9 +84,8 @@ let url='http://localhost:8000/api/class/'
   const semfun=(e)=>{
     setsemestername(e.target.value)
   }
-  const deleteclass=(idd)=>{
-    console.log(idd)
-    let delurl=url+"?class_id="+idd
+  const deleteclass=()=>{
+    let delurl=url+"?class_id="+reid
     axios.delete(delurl).then(
       (response)=>{
           alert(
@@ -100,8 +101,30 @@ let url='http://localhost:8000/api/class/'
   
     
   }
+  const handleClosereje=()=>{
+    setShowreje(false);
+  }
+  const handleOpenreje=(targ)=>{
+    setShowreje(true);
+    setreid(targ)
+    
+    
+  }
   return (
     <div>
+              <Modal size='lg'
+             isOpen={showreje}>
+                          toggle={()=>setShowreje(true)}
+            <ModalHeader
+            toggle={()=>setShowreje(false)}> 
+             Class Data 
+            </ModalHeader>
+        <ModalBody>
+              <p>Are you sure to delete</p>
+              <button className="btn btn-secondary"onClick={handleClosereje}>Cancel</button>
+              <button className="btn btn-danger" onClick={deleteclass}>Delete</button>
+            </ModalBody>
+        </Modal>
        <Modal size='lg'
              isOpen={showForm}
             
@@ -228,7 +251,7 @@ let url='http://localhost:8000/api/class/'
                     <td>{x.student_count}</td>
 
               {/* <i className="fas fa-pencil-alt" style={{ cursor: 'pointer', color: '#28a745', marginRight: '10px' }}></i> Pencil Icon */}
-              <i onClick={() => deleteclass(x.class_id)}className="fas fa-trash-alt" style={{ cursor: 'pointer', color: '#dc3545' }}></i>
+              <i onClick={() => handleOpenreje(x.class_id)}className="fas fa-trash-alt" style={{ cursor: 'pointer', color: '#dc3545' }}></i>
               </tr>
             ))):
             (
@@ -242,7 +265,7 @@ let url='http://localhost:8000/api/class/'
                         <td>{x.student_count}</td>
     
                   {/* <i className="fas fa-pencil-alt" style={{ cursor: 'pointer', color: '#28a745', marginRight: '10px' }}></i> Pencil Icon */}
-                    <i onClick={() => deleteclass(x.class_id)}className="fas fa-trash-alt" style={{ cursor: 'pointer', color: '#dc3545' }}></i>
+                    <i onClick={() => handleOpenreje(x.class_id)}className="fas fa-trash-alt" style={{ cursor: 'pointer', color: '#dc3545' }}></i>
                 </tr>              
                 
                

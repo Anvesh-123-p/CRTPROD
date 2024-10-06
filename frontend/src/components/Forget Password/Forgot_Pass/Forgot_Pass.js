@@ -5,7 +5,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const Forgot_Pass = () => {
-    const [email, setEmail] = useState("");
+    const [email, setEmail] = useState();
     const newEmail=(e)=>{
         console.log(e)
             console.log(e.target.value)
@@ -27,7 +27,12 @@ const Forgot_Pass = () => {
     
         
           
-        })
+        }).catch((err) =>  {
+            console.log(err)
+            
+            alert(JSON.stringify(err.response.data))
+          
+          })
     }
     return (
         <div className={styles.container}>

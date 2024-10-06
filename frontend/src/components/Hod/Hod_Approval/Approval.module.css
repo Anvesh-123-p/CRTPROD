@@ -9,6 +9,12 @@
 .nav_bar form {
     margin-left: 6%; 
 }
+.bcst{
+    padding-right: 80%;
+}
+tr{
+    margin:90%
+}
 
 .table thead th {
     background-color: #f9f9f9;

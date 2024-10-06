@@ -8,11 +8,13 @@ import {Link} from 'react-router-dom';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import {BiSearch} from 'react-icons/bi'
+import { Modal,ModalHeader,ModalBody } from 'reactstrap';
 
 import { useState,useEffect } from 'react';
 const Faculty_View = () => {
   let navigate=useNavigate()
-
+  const[showreje,setShowreje]=useState(false);
+  const[reid,setreid]=useState('0');
   const[d,setd]=useState([]);
   const[ch,setch]=useState([]);
   const[Search,setSearch]=useState('')
@@ -24,9 +26,17 @@ const Faculty_View = () => {
         }, 2000);
 
 }
-const deletefac=(idd)=>{
-  console.log(idd)
-  let delurl="http://localhost:8000/api/users/?id="+idd
+const handleClosereje=()=>{
+  setShowreje(false);
+}
+const handleOpenreje=(targ)=>{
+  setShowreje(true);
+  setreid(targ)
+  
+  
+}
+const deletefac=()=>{
+  let delurl="http://localhost:8000/api/users/?id="+reid
   axios.delete(delurl).then(
     (response)=>{
         alert(
@@ -60,6 +70,19 @@ useEffect(() => {
 
   return (
     <div>
+      <Modal size='lg'
+             isOpen={showreje}>
+                          toggle={()=>setShowreje(true)}
+            <ModalHeader
+            toggle={()=>setShowreje(false)}> 
+            New Data 
+            </ModalHeader>
+        <ModalBody>
+              <p>Are you sure to delete</p>
+              <button className="btn btn-secondary"onClick={handleClosereje}>Cancel</button>
+              <button className="btn btn-danger" onClick={deletefac}>Delete</button>
+            </ModalBody>
+        </Modal>
       {/* First Navbar */}
       <nav className={`navbar navbar-expand-lg ${styles.nav_bar}`  }>
   <div className="container-fluid">
@@ -143,15 +166,15 @@ useEffect(() => {
 
 <tr>
 <td>{x.name}</td>
-<td>Mathematics</td>
+<td>{x.subjects}</td>
 <td>{x.mobile_number}</td>
 <td>
   <i className="fas fa-eye" style={{ cursor: 'pointer', color: '#007bff' }}></i> {/* Eye Icon */}
 </td>
 <td>
   {/* <i className="fas fa-pencil-alt" style={{ cursor: 'pointer', color: '#28a745', marginRight: '10px' }}></i> Pencil Icon */}
-  <i onClick={() => deletefac(x.id)}className="fas fa-trash-alt" style={{ cursor: 'pointer', color: '#dc3545' }}></i>
-  </td>
+  {x.user_type!='HOD' && <i onClick={() => handleOpenreje(x.id)}className="fas fa-trash-alt" style={{ cursor: 'pointer', color: '#dc3545' }}></i>}
+  {x.user_type=='HOD' && <p>Cant Delete HOD Account</p>}  </td>
 </tr>
 
             )
@@ -162,14 +185,26 @@ useEffect(() => {
 
             <tr>
             <td>{x.name}</td>
-            <td>Mathematics</td>
+            <td>{x.subjects.map((y)=>(
+              <div>{y}</div>
+            )
+
+
+            )
+              
+              
+              
+              
+              }</td>
             <td>{x.mobile_number}</td>
             <td>
               <i className="fas fa-eye" style={{ cursor: 'pointer', color: '#007bff' }}></i> {/* Eye Icon */}
             </td>
             <td>
               {/* <i className="fas fa-pencil-alt" style={{ cursor: 'pointer', color: '#28a745', marginRight: '10px' }}></i> Pencil Icon */}
-              <i onClick={() => deletefac(x.id)}className="fas fa-trash-alt" style={{ cursor: 'pointer', color: '#dc3545' }}></i>
+              {x.user_type!='HOD' && <i onClick={() => handleOpenreje(x.id)}className="fas fa-trash-alt" style={{ cursor: 'pointer', color: '#dc3545' }}></i>}
+              {x.user_type=='HOD' && <p>Cant Delete HOD Account</p>}
+
               </td>
             </tr>
           ))

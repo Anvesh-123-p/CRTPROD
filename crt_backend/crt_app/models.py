@@ -18,7 +18,7 @@ DEPT_CHOICES = [
 
 
 STATUS_CHOICES_LSP = [
-    ('AC', 'Active'), ('IA', 'Inactive'),
+    ('In Progress', 'In Progress'), ('Completed', 'Completed'),('Pending for Approval', 'Pending for Approval'),('Rejected', 'Rejected'),('Not Created', 'Not Created'),
 ]
 
 GENDER_CHOICES = [
@@ -171,7 +171,7 @@ class Subject(models.Model):
 class LessonPlan(models.Model):
     name = models.CharField(max_length=255)
     subject_id = models.OneToOneField(Subject, on_delete=models.CASCADE)
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES_LSP, default='IA')
+    status = models.CharField(max_length=40, choices=STATUS_CHOICES_LSP, default='Not Created')
 
     def total_hours(self):
         return self.topic.aggregate(total=models.Sum('hours'))['total'] or 0
@@ -179,13 +179,13 @@ class LessonPlan(models.Model):
 
 class Topic(models.Model):
     STATUS_CHOICES = [
-        ('NS', 'Not Started'), ('C', 'Completed'),
+        ('Not Started', 'Not Started'), ('Completed', 'Completed'),('Pending', 'Pending')
     ]
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
     LessonPlan_id=models.ForeignKey(LessonPlan, on_delete=models.CASCADE,blank=True, null=True)
     hours = models.IntegerField()
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='NS')
+    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='Not Started')
     # comments = models.TextField(blank=True, null=True)
     # actual_completed_date = models.DateField(blank=True, null=True)
     def __str__(self):

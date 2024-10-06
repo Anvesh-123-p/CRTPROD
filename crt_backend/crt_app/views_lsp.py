@@ -1,12 +1,21 @@
-# from django.shortcuts import get_object_or_404
-# from rest_framework.views import APIView
-# from rest_framework.response import Response
-# from .models import *
-# from .serializers import *
-# from rest_framework import status
-# import smtplib
+from django.shortcuts import get_object_or_404
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from .models import *
+from .serializers import *
+from rest_framework import status
+import smtplib
 
-# class LessonPlanCreateView(APIView):
+class LessonPlanEditView(APIView):
+    def patch(self,request):
+        lsp = LessonPlan.objects.get(id = request.data.get('lspid'))
+
+        serializer = LessonPlanSerializer(lsp, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"status": "success", "data": LessonPlanSerializer(lsp).data}, status=200)
+        else:
+            return Response({"status": "error", "data": serializer.errors}, status=400)
 #     def get(self, request):
 #         queryset = LessonPlan.objects.all()  # Query all Topic instances
 #         serializer = LessonPlanSerializer(queryset, many=True)  # Serialize the queryset

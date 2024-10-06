@@ -11,18 +11,22 @@ import axios from "axios";
 import Dropdown from 'react-bootstrap/Dropdown';
 import {BiSearch} from 'react-icons/bi'
 import { Modal,ModalHeader,ModalBody } from 'reactstrap';
-
 import { useNavigate } from "react-router-dom";
 
 
 const Approval = () => {
   const[showForm,setShowForm]=useState(false);
-
+  const[showappro,setShowappro]=useState(false);
+  const[showreje,setShowreje]=useState(false);
+  const[reid,setreid]=useState('0');
     const[load,setload]=useState(false)
     const[de,setde]=useState(false)
     const[Search,setSearch]=useState('')
     const[s,sets]=useState(false)
     const[newdata,setnewdata]=useState([])
+    const[newdatakeys,setnewdatakeys]=useState([])
+    const[newdatavals,setnewdatavals]=useState([])
+    const[vals,setvals]=useState({})
     let navigate=useNavigate()
 
 
@@ -56,7 +60,7 @@ const Approval = () => {
         console.log(e)
         let url="http://localhost:8000/api/approval/"
         let body={
-            "approval_id":e,
+            "approval_id":reid,
             "status":"approved"
         }
     
@@ -77,12 +81,30 @@ const Approval = () => {
     const handleClose=()=>{
       setShowForm(false);
   }
+  const handleCloseappro=()=>{
+    setShowappro(false);
+}
+const handleClosereje=()=>{
+  setShowreje(false);
+}
+const handleOpenreje=(targ)=>{
+  setShowreje(true);
+  setreid(targ)
+  
+  
+}
+const handleOpenappro=(targ)=>{
+  setShowappro(true);
+  setreid(targ)
+  
+  
+}
 
     const rejecthandler=(e)=>{
         console.log(e)
         let url="http://localhost:8000/api/approval/"
         let body={
-            "approval_id":e,
+            "approval_id":reid,
             "status":"rejected"
         }
     
@@ -114,8 +136,12 @@ const Approval = () => {
       const localdata = JSON.parse(localStorage.getItem("token"));
       let url ="http://127.0.0.1:8000/api/approval/?approval_id="+idd
   
-      axios.get(url+2).then((response)=>{
+      axios.get(url).then((response)=>{
         setnewdata(response.data.data)
+        setnewdatakeys(response.data.new_data_keys)
+        setnewdatavals(response.data.new_data_vals)
+
+
   
       
         
@@ -135,7 +161,26 @@ const Approval = () => {
             <ModalBody>
             
             <div class="row g-5 mb-3">
-              <p>{newdata.new_data}</p>
+              {/* <p>{newdata.new_data_keys}</p> */}
+              {console.log(newdatakeys)}
+            
+                
+
+              
+              {/* {newdatakeys.map((x)=>(
+                <tr><th>
+                  {x}: {x}
+
+                </th></tr>
+                ))} */}
+                {
+        Object.keys(vals).map((key, index) => ( 
+          <p key={index}> <b>{key}</b> : {vals[key]}</p> 
+        ))
+      }
+                  
+              
+                
           
                 
                 
@@ -159,6 +204,36 @@ const Approval = () => {
          
             </ModalBody>
 
+
+
+
+        </Modal>
+
+        <Modal size='lg'
+        isOpen={showappro}>
+                      toggle={()=>setShowappro(true)}
+            <ModalHeader
+            toggle={()=>setShowappro(false)}> 
+            New Data 
+            </ModalHeader>
+        <ModalBody>
+              <p>Are you sure to Approve</p>
+              <button className="btn btn-secondary" onClick={handleCloseappro}>Cancel</button>
+              <button  className="btn btn-success bcst" onClick={approhandler}>Confirm</button>
+            </ModalBody>
+        </Modal>
+        <Modal size='lg'
+             isOpen={showreje}>
+                          toggle={()=>setShowreje(true)}
+            <ModalHeader
+            toggle={()=>setShowreje(false)}> 
+            New Data 
+            </ModalHeader>
+        <ModalBody>
+              <p>Are you sure to delete</p>
+              <button className="btn btn-secondary"onClick={handleClosereje}>Cancel</button>
+              <button className="btn btn-danger" onClick={rejecthandler}>Delete</button>
+            </ModalBody>
         </Modal>
                         <nav className={`navbar navbar-expand-lg ${styles.nav_bar}`  }>
   <div className="container-fluid">
@@ -260,18 +335,22 @@ setShowForm(true);
 let url ="http://127.0.0.1:8000/api/approval/?approval_id="+x.approval_id
 
 axios.get(url).then((response)=>{
+  console.log(response.data)
   setnewdata(response.data)
+  setnewdatakeys(response.data.new_data_keys)
+  setvals(response.data.new_data)
+  setnewdatavals(response.data.new_data_vals)
 
 
   
 })
                         }} role="button">View</a></td>
 
-                        <td scope="col">    <a onClick={() => approhandler(x.approval_id)}>
+                        <td scope="col">    <a onClick={() => handleOpenappro(x.approval_id)}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="25" height="30" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16" color="green" >
                         <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
                                 <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" /></svg></a>
-                       <a onClick={() => rejecthandler(x.approval_id)}> <svg xmlns="http://www.w3.org/2000/svg" width="25" height="20" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16" color="red">
+                       <a onClick={() => handleOpenreje(x.approval_id)}> <svg xmlns="http://www.w3.org/2000/svg" width="25" height="20" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16" color="red">
                                 <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
                                 <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
                             </svg></a></td>
@@ -296,16 +375,20 @@ let url ="http://127.0.0.1:8000/api/approval/?approval_id="+x.approval_id
 axios.get(url).then((response)=>{
   
   setnewdata(response.data)
-  console.log(newdata)
+  console.log(response.data.data)
+  setvals(response.data.new_data)
+
+  setnewdatakeys(response.data.new_data_keys)
+  setnewdatavals(response.data.new_data_vals)
 
 
   
 })
-                        }} role="button">View</a></td>              <td scope="col">    <a onClick={() => approhandler(x.approval_id)}>
+                        }} role="button">View</a></td>              <td scope="col">    <a onClick={() => handleOpenappro(x.approval_id)}>
               <svg xmlns="http://www.w3.org/2000/svg" width="25" height="30" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16" color="green" >
               <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
               <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0" /></svg></a>
-             <a onClick={() => rejecthandler(x.approval_id)}> <svg xmlns="http://www.w3.org/2000/svg" width="25" height="20" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16" color="red">
+             <a onClick={() => handleOpenreje(x.approval_id)}> <svg xmlns="http://www.w3.org/2000/svg" width="25" height="20" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16" color="red">
                       <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
                       <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
                   </svg></a></td>

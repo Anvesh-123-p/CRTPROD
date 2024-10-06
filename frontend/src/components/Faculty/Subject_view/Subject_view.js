@@ -11,14 +11,23 @@ import {BiSearch} from 'react-icons/bi'
 
 import { useNavigate } from "react-router-dom";
 
-const Faculty_Subject_view = () => {
+const Subject_view = () => {
     let navigate=useNavigate()
 
     const[d,setd]=useState([]);
     const[showForm,setShowForm]=useState(false);
+    const[showlsp,setShowlsp]=useState(false);
+    const[lspid,setlspid]=useState("");
     const[subname,setsubname]=useState(false);
+    const[topicname,settopicname]=useState("");
+    const[duration,setduration]=useState("");
+
     const[classes,setclasses]=useState([])
+    const[tdata,settdata]=useState([])
+
+    const [fac,setfac]=useState([]);
     const [clsid,setclsid]=useState();
+    const [facid,setfacid]=useState();
     const[Search,setSearch]=useState('')
     const[s,sets]=useState(false)
 
@@ -34,7 +43,7 @@ let url ="http://localhost:8000/api/subjects/";
         let data={
             
           "name": subname,
-           "faculty_id": localdata.id,
+           "faculty_id": facid,
         "class_id": clsid,
  
        
@@ -44,7 +53,7 @@ let url ="http://localhost:8000/api/subjects/";
 
         axios.post(url,data).then(
             (response)=>{
-                console.log(response.data)
+                console.log("Subject Created")
   
               }
             
@@ -62,6 +71,37 @@ let url ="http://localhost:8000/api/subjects/";
         console.log(e.target.value)
         setclsid(e.target.value)
       }
+      const toic=(e)=>{
+        setShowlsp(true)
+        setlspid(e)
+
+      let url = "http://127.0.0.1:8000/api/u/?lspid="+e
+
+        axios.get(url).then((response)=>{
+          console.log(response.data)
+          settdata(response.data.data)
+          
+        
+        
+          
+        })
+
+      }
+      const tname=(e)=>{
+        console.log(e)
+        console.log(e.target.value)
+        settopicname(e.target.value)
+      }
+      const dur=(e)=>{
+        console.log(e)
+        console.log(e.target.value)
+        setduration(e.target.value)
+      }
+      const Facid=(e)=>{
+        console.log(e)
+        console.log(e.target.value)
+        setfacid(e.target.value)
+      }
       const logout=()=>{
         localStorage.clear()
         setTimeout(() => {
@@ -69,25 +109,73 @@ let url ="http://localhost:8000/api/subjects/";
             }, 2000);
 
     }
+    const handleCloselsp=(e)=>{
+      // setShowlsp(false);
+      console.log(e)
+      let delurl="http://127.0.0.1:8000/api/u/?id="+e
+      axios.delete(delurl).then(
+        (response)=>{
+          console.log(response)
+          
+            alert(
+              "Deleted Succesfully"
+  
+            )
+            settdata(response.data.data)
+            
+  
+          }
+        
+        ).catch((err) => alert(JSON.stringify(err.response.data)))
+
+
+  }
+    const createlsp=()=>{
+      console.log("hello")
+      let topicdata={
+        "LessonPlan_id":lspid,
+        "name":topicname,
+        "hours":duration
+
+      }
+      let url="http://localhost:8000/api/u/"
+
+      
+      axios.post(url,topicdata).then(
+        (response)=>{
+            console.log(response)
+            // toic(hh)
+            setduration("")
+            settopicname("")
+            settdata(response.data.data)
+
+
+          }
+        
+        ).catch((err) => console.log(err))
+      
+    }
     
     const formopen=()=>{
         setShowForm(true);
         const localdata = JSON.parse(localStorage.getItem("token"));
         console.log(localdata.dept)
         let classesurl="http://localhost:8000/api/class/?dept="+localdata.dept
-        console.log(classesurl)
+        let facurl="http://localhost:8000/api/users/?user_type=FAC&dept="+localdata.dept
 
 
         axios.get(classesurl).then((response)=>{
               if(response.data.data.length!=0)
             setclasses(response.data.data)
           })
+          axios.get(facurl).then((response)=>{
+            if(response.data.data.length!=0)
+          setfac(response.data.data)
+        })
     }
     const localdata = JSON.parse(localStorage.getItem("token"));
 
-    let substats="http://localhost:8000/api/GetSubjectsOfFacultyByDepartment/?dept="+localdata.dept+"&fac="+localdata.id
-console.log(substats);
-    http://localhost:8000/api/GetSubjectsOfFacultyByDepartment/?fac=8&dept=EEE
+    let substats="http://localhost:8000/api/GetSubjectsByDepartment/?dept="+localdata.dept
     useEffect(() => {
       
         axios.get(substats).then((response)=>{
@@ -99,6 +187,54 @@ console.log(substats);
       },[]);
     return (
         <div>
+
+<Modal size='lg'
+        isOpen={showlsp}>
+                      toggle={()=>setShowlsp(true)}
+            <ModalHeader
+            toggle={()=>setShowlsp(false)}> 
+            New Data 
+            </ModalHeader>
+        <ModalBody>
+
+{
+  
+        tdata.map((x)=>(
+        <div class="row g-5 mb-3">
+                <div class="col ">
+                    <label>Topic Name</label>
+                    <input type="text" className={`form-control ${styles.input}`}    placeholder="Topic name" aria-label="Topic name" value={x.name}/>
+                </div>
+                <div class="col ">
+                    <label>Duration</label>
+                    <input type="text" className={`form-control ${styles.input}`}    placeholder="Duration" aria-label="Duration" value={x.hours}/>
+                </div>
+                <div class="col">
+              <button className="btn btn-secondary" onClick={()=>handleCloselsp(x.id)}>Delete Topic</button></div>
+              </div>
+        ))}
+
+
+
+
+
+
+
+
+        <div class="row g-5 mb-3">
+                <div class="col ">
+                    <label>Topic Name</label>
+                    <input type="text" className={`form-control ${styles.input}`} value={topicname} onChange = {(e)=>{tname(e)}}  placeholder="Topic name" aria-label="Topic name"/>
+                </div>
+                <div class="col ">
+                    <label>Duration</label>
+                    <input type="text" className={`form-control ${styles.input}`} value={duration} onChange = {(e)=>{dur(e)}}  placeholder="Duration" aria-label="Duration"/>
+                </div>
+               
+              <div class="col"> <button  className="btn btn-success bcst" onClick={createlsp}>Add Topic</button>
+              </div></div>
+            </ModalBody>
+        </Modal>
                  <Modal size='lg'
              isOpen={showForm}
             
@@ -114,13 +250,19 @@ console.log(substats);
             {<div class="row g-5 mb-3">
                 <div class="col ">
                     <label>Subject Name</label>
-                    <input type="text" className={`form-control ${styles.input}`}  onChange = {(e)=>{subjectname(e)}}  placeholder="Company name" aria-label="Company name"/>
+                    <input type="text" className={`form-control ${styles.input}`}  onChange = {(e)=>{subjectname(e)}}  placeholder="Subject name" aria-label="Company name"/>
                 </div>
                 
                 <select id="inputState"onChange={(e)=>{Clsid(e)}}>
                 <option defaultValue>Class Name</option>
                 {classes.map((x)=>(
                 <option value={x.class_id}>{x.dept}_{x.sem}_{x.sec}</option>
+                ))}
+                </select>
+                <select id="inputState"onChange={(e)=>{Facid(e)}}>
+                <option defaultValue>Faculty</option>
+                {fac.map((x)=>(
+                <option value={x.id}>{x.name}</option>
                 ))}
                 </select>
               
@@ -130,7 +272,7 @@ console.log(substats);
            
            
                 
-            <button className={styles.button} onClick={handleClose} >Submit</button>
+            <button className={styles.button} onClick={handleClose} >Submit sub</button>
        
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
         
@@ -146,24 +288,24 @@ console.log(substats);
     <div className={`collapse navbar-collapse ${styles.collapse}`} id="navbarSupportedContent">
       <ul className={`navbar-nav me-auto mb-2 mb-lg-0 ${styles.navbar_nav}`}>
         <li className={`nav-item ${styles.nav_item}`}>
-          <Link to="/Faculty/home" className={`nav-link ${styles.nav_link}`} aria-current="page">Home</Link>
+          <Link to="/faculty/Home_View" className={`nav-link ${styles.nav_link}`} aria-current="page">Home</Link>
         </li>
         <li className={`nav-item ${styles.nav_item}`}>
-          <Link to="/Faculty/Class_View" className={`nav-link ${styles.nav_link}`} >Classes</Link>
+          <Link to="/faculty/Class_View" className={`nav-link ${styles.nav_link}`} >Classes</Link>
         </li>
         <li className={`nav-item ${styles.nav_item}`}>
-          <Link to="/Faculty/Faculty_View" className={`nav-link ${styles.nav_link}`}>Faculty</Link>
+          <Link to="/faculty/Faculty_View" className={`nav-link ${styles.nav_link}`}>Faculty</Link>
         </li>
         <li className={`nav-item ${styles.nav_item}`}>
-          <Link to="/Faculty/Subject_view" className={`nav-link ${styles.nav_link}`} style={{ fontWeight: 'bold' }}>Subjects</Link>
+          <Link to="/faculty/Subject_view" className={`nav-link ${styles.nav_link}`} style={{ fontWeight: 'bold' }}>Subjects</Link>
         </li>
         
       </ul>
       <div className="dropdown ms-auto">
         <img src={imgprofile} alt="Profile Image" className="dropdown-toggle profile-img" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" />
         <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-          <Link to="/Faculty/Profile"><li><span className="dropdown-item ">Profile</span></li></Link>
-          <Link to="/Faculty/Edit_Faculty"><li><span className="dropdown-item">Edit Profile</span></li></Link>
+          <Link to="/Hod/Profile"><li><span className="dropdown-item ">Profile</span></li></Link>
+          <Link to="/Hod/Edit_Faculty"><li><span className="dropdown-item">Edit Profile</span></li></Link>
           <Link to =""><li><span className="dropdown-item" onClick={logout}>Logout</span></li></Link>
         </ul>
       </div>
@@ -193,12 +335,14 @@ console.log(substats);
                         <th scope="col">Subject Name</th>
                         <th scope="col">Faculty Assigned</th>
                         <th scope="col">Class</th>
+                        <th scope="col">Lesson Plan Status</th>
                         <th scope="col">Lesson Plan</th>
+                        
                     </tr>
                 </thead>
                 <tbody>
                 {d.length===0&&
-          <div id={styles.loading}><p>Oops, we dont see any classes subjects assigned to you</p></div>}
+          <div id={styles.loading}><p>Sorry, we dont see any classes created for the department</p></div>}
                 
                 
                 
@@ -218,9 +362,10 @@ console.log(substats);
                         <td>{x.name}</td>
                         <td>{x.faculty_id}</td>
                         <td>{x.class_id}</td>
-                        <td><a href="#">Create</a></td>
-                        <td><a href="#">Edit</a></td>
-                        <td><a href="#">View</a></td>
+                        <td>{x.lspstatus}</td>
+  
+                        {x.lspstatus=="Not Created" && <td><button onClick={() => toic(x.lspid)}>Create Lesson Plan</button></td>}
+                        {x.lspstatus!="Not Created" && <td><a href="#">Edit</a></td>}
                         {/* <td>
                             <a href="#"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-pencil" viewBox="0 0 16 16">
                                 <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325" />
@@ -238,7 +383,12 @@ console.log(substats);
                     <td>{x.name}</td>
                     <td>{x.faculty_id}</td>
                     <td>{x.class_id}</td>
-                    <td><a href="#">View</a></td>
+                    <td>{x.lspstatus}</td>
+                    {x.lspstatus=="Not Created" && <td><button onClick={() => toic(x.lspid)}>Create Lesson Plan</button></td>}
+
+
+
+                    {x.lspstatus!="Not Created" && <td><a href="#">Edit</a></td>}
                     {/* <td>
                         <a href="#"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-pencil" viewBox="0 0 16 16">
                             <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325" />
@@ -259,7 +409,7 @@ console.log(substats);
                 </tbody>
             </table>
 
-            <div className={styles.page}>
+            {/* <div className={styles.page}>
                 <nav aria-label="Page navigation example">
                     <ul className="pagination justify-content-center mt-4">
                         <li className="page-item disabled">
@@ -273,9 +423,9 @@ console.log(substats);
                         </li>
                     </ul>
                 </nav>
-            </div>
+            </div> */}
         </div>
     );
 };
 
-export default Faculty_Subject_view;
+export default Subject_view;

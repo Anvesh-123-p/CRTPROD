@@ -5,7 +5,7 @@ from .models import *
 from .serializers import *
 from rest_framework import status
 import smtplib
-
+import ast
 
 def sendmail(stu_name,approval_type,old_data,new_data,receiver):
     server =smtplib.SMTP("smtp.gmail.com",587)
@@ -66,8 +66,28 @@ class ApprovalView(APIView):
             'status': approval.status,
             'approval_type': approval.approval_type,
             'old_data': approval.old_data,
-            'new_data': approval.new_data
+            'new_data': ast.literal_eval(approval.new_data),
+            'new_data_keys':ast.literal_eval(approval.new_data).keys(),
+            'new_data_vals':ast.literal_eval(approval.new_data).values()
+
         }
+        clid= result['new_data']['clg_name']
+        clsd= result['new_data']['class_id']
+        college = College.objects.get(id=clid)
+        clas = Class.objects.get(class_id=clsd)
+        collegeserializer = CollegeSerializer(college)
+        clseriali = ClassSerializer(clas)
+
+        college_actual_name=collegeserializer.data['name']
+        class_actual_name=str(clseriali.data['sem'])+"--"+str(clseriali.data['dept'])+"--"+str(clseriali.data['sec'])
+        print(class_actual_name)
+        result['new_data']['clg_name']=college_actual_name
+        result['new_data']['class_id']=class_actual_name
+        if(result['new_data']['user_type']=='ST'):
+            result['new_data']['user_type']='Student'
+        else:
+            result['new_data']['user_type']='Faculty'
+
 
         return Response(result)
 
