@@ -31,21 +31,18 @@ def send_reset_email(email, reset_code):
 class PasswordForgetView(APIView):
     def get(self, request):
         email = request.query_params.get('email')
-        try:
+        
                 
+        try:
             user = User.objects.get(email=email)
-            print(user)
-        except User.DoesNotExist:
-            raise ValidationError("No user with this email address exists.")
-        if user:
-            try:
-                reset_code = generate_reset_code()
-                user.password = reset_code+"Reset@12"
-                send_reset_email(email, reset_code+"@12ResetPassword34")
-                user.save()
-                return Response({"message": "Password Reset Successful"}, status=status.HTTP_200_OK)
-            except ValidationError as e:
-                return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        return Response({"error": "Email is required."}, status=status.HTTP_400_BAD_REQUEST)
+        
+            reset_code = generate_reset_code()
+            user.password = reset_code+"Reset@12"
+            send_reset_email(email, reset_code+"Reset@12")
+            user.save()
+            return Response({"message": "Password Reset Successful"}, status=status.HTTP_200_OK)
+            
+        except:
+            return Response({"error": "Invalid Email id"}, status=status.HTTP_400_BAD_REQUEST)
 
         

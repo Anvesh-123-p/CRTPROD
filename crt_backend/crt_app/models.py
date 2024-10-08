@@ -62,7 +62,7 @@ class Class(models.Model):
     sem = models.IntegerField(choices=SEMESTER_CHOICES)
     dept = models.CharField(max_length=10, choices=DEPT_CHOICES, default='x')
     sec = models.CharField(max_length=10)
-    clg_name = models.ForeignKey('College', on_delete=models.CASCADE,null=True, blank=True)  # ForeignKey for dropdown
+    clg_name = models.ForeignKey('College', on_delete=models.CASCADE)  # ForeignKey for dropdown
     year=models.IntegerField(null=True,blank=True)
     class Meta:
         unique_together = ('sem', 'dept', 'sec')
@@ -159,8 +159,8 @@ class User(models.Model):
 class Subject(models.Model):
     sub_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
-    faculty_id = models.ForeignKey(User,on_delete=models.CASCADE,null=True, blank=True)
-    class_id = models.ForeignKey(Class, on_delete=models.CASCADE, null=True, blank=True)
+    faculty_id = models.ForeignKey(User,on_delete=models.CASCADE)
+    class_id = models.ForeignKey(Class, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
@@ -188,8 +188,8 @@ class Topic(models.Model):
     status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='Not Started')
     # comments = models.TextField(blank=True, null=True)
     # actual_completed_date = models.DateField(blank=True, null=True)
-    def __str__(self):
-        return self.name
+    # def __str__(self):
+    #     return self.name
 
 
 class Approval(models.Model):

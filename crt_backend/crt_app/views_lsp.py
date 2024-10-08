@@ -8,11 +8,47 @@ import smtplib
 
 class LessonPlanEditView(APIView):
     def patch(self,request):
-        lsp = LessonPlan.objects.get(id = request.data.get('lspid'))
+        data=request.data
+        print(request.data)
+        try:
+            lsp = LessonPlan.objects.get(id = request.data.get('lspid'))
+        except User.DoesNotExist:
+            return Response(
+                {"status": "error", "message": "Lesson Plan not found"}, 
+                status=status.HTTP_404_NOT_FOUND
+            )
+        print(lsp)
+
 
         serializer = LessonPlanSerializer(lsp, data=request.data, partial=True)
+        print(serializer)
         if serializer.is_valid():
             serializer.save()
+            
+            hod = User.objects.get(user_type='HOD', dept=data["dept"])
+            getdat=serializer.data['subject_id']
+
+            item = get_object_or_404(Subject, sub_id=getdat)
+            subserializer = SubjectSerializer(item)
+            print(subserializer.data)
+
+
+
+
+
+
+
+            Approval.objects.create(
+                    user_email=data["email"],
+                    user_name=data["name"],
+                    hod_id=hod,
+                    dept=data["dept"],
+                    status='pending',
+                    approval_type='new_lessonplan_approval',
+                    old_data="NO Lesson Plan",
+                    new_data=subserializer.data
+                )
+            
             return Response({"status": "success", "data": LessonPlanSerializer(lsp).data}, status=200)
         else:
             return Response({"status": "error", "data": serializer.errors}, status=400)

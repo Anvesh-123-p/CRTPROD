@@ -3,12 +3,21 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
 from .models import *
-from .serializers import UserSerializer, SubjectSerializer
+from .serializers import *
 import smtplib
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
 
-
+def validate_password(password):
+    if len(password) < 8:
+        return False
+    if not re.search("[a-z]", password):
+        return False
+    if not re.search("[A-Z]", password):
+        return False
+    if not re.search("[0-9]", password):
+        return False
+    return True
 def sendmail(stu_name,approval_type,old_data,new_data):
     server =smtplib.SMTP("smtp.gmail.com",587)
     server.starttls()
@@ -99,7 +108,72 @@ class UserView(APIView):
         if param.get('email'):
             item = get_object_or_404(User, email=param.get('email'))
             serializer = UserSerializer(item)
-            return Response({"status": "success", "data": serializer.data}, status=200)
+            
+            item30 = Subject.objects.filter(faculty_id=serializer.data['id'])
+            serializere = SubjectSerializer(item30,many=True)
+            l=[]
+            c=[]
+            k=[]
+            daya=[]
+            for j in serializere.data:
+                l.append(j['name'])
+                daya.append(j['sub_id'])
+                if(j['class_id'] not in k):
+                    item33 = get_object_or_404(Class, class_id=j['class_id'])        
+                    cs = ClassSerializer(item33)
+                    h=cs.data
+                
+                    c.append(str(h['sem'])+str(h['dept'])+"--"+h['sec'])
+                    k.append(j['class_id'])
+
+
+            d=serializer.data
+            d['subjects']=l
+            d['classes']=c
+            print(d)
+            print(daya,"(((((((((())))))))))")
+            daya2=[]
+
+            for i in daya:
+                try:
+                    lp33 = get_object_or_404(LessonPlan, subject_id=i)   
+                    ls = LessonPlanSerializer(lp33)
+                    daya2.append(ls.data['id'])
+                except:
+                    pass
+            print(daya2)
+            final=[]
+            for i in range(0,len(daya2)):
+                sub={'Completed':0,
+                'NotStarted':0,
+                'Pending':0,
+                'Total':0}
+                topic30 = Topic.objects.filter(LessonPlan_id=daya2[i])   
+                ts = TopicSerializer(topic30,many=True)
+                total=len(ts.data)
+                sub['Total']=total
+                sub['Subject']=l[i]
+
+                for i in ts.data:
+                    if(i['status']=='Completed'):
+                        sub['Completed']=sub['Completed']+1
+                    elif(i['status']=='Pending'):
+                        sub['Pending']=sub['Pending']+1
+                    elif(i['status']=='Not Started'):
+                        sub['NotStarted']=sub['NotStarted']+1
+
+                
+
+                final.append(sub)
+                print(final)
+
+
+
+
+
+
+
+            return Response({"status": "success", "data": d,"data2":final}, status=200)
         if param.get('id'):
             item = get_object_or_404(User, id=param.get('id'))
             serializer = UserSerializer(item)
@@ -135,9 +209,16 @@ class UserView(APIView):
 
     def post(self, request):
         data = request.data
+    
         try:
             serializer = UserSerializer(data=data)
+            if(not validate_password(data['password'])):
+                return Response({"message": "Password should have at least 8 characters, including uppercase, lowercase, and a number."}, status=404)
+
+
             serializer.is_valid(raise_exception=True)
+
+
             user = serializer.save()
             if data.get("user_type") == 'ST':
                 if(len(data.get("mobile_number"))!=10):

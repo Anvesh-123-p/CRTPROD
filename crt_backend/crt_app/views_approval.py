@@ -71,23 +71,66 @@ class ApprovalView(APIView):
             'new_data_vals':ast.literal_eval(approval.new_data).values()
 
         }
-        clid= result['new_data']['clg_name']
-        clsd= result['new_data']['class_id']
-        college = College.objects.get(id=clid)
-        clas = Class.objects.get(class_id=clsd)
-        collegeserializer = CollegeSerializer(college)
-        clseriali = ClassSerializer(clas)
+       
+        if(result['approval_type']!='new_lessonplan_approval'):
+            if(result['new_data']['user_type']=='ST'):
+                clid= result['new_data']['clg_name']
+                clsd= result['new_data']['class_id']
+                college = College.objects.get(id=clid)
+                clas = Class.objects.get(class_id=clsd)
+                collegeserializer = CollegeSerializer(college)
+                clseriali = ClassSerializer(clas)
 
-        college_actual_name=collegeserializer.data['name']
-        class_actual_name=str(clseriali.data['sem'])+"--"+str(clseriali.data['dept'])+"--"+str(clseriali.data['sec'])
-        print(class_actual_name)
-        result['new_data']['clg_name']=college_actual_name
-        result['new_data']['class_id']=class_actual_name
-        if(result['new_data']['user_type']=='ST'):
-            result['new_data']['user_type']='Student'
+                college_actual_name=collegeserializer.data['name']
+                class_actual_name=str(clseriali.data['sem'])+"--"+str(clseriali.data['dept'])+"--"+str(clseriali.data['sec'])
+                print(class_actual_name)
+                result['new_data']['clg_name']=college_actual_name
+                result['new_data']['class_id']=class_actual_name
+                result['new_data']['user_type']='Student'
+            else:
+                clid= result['new_data']['clg_name']
+                clsd= result['new_data']['class_id']
+                college = College.objects.get(id=clid)
+                clas = Class.objects.get(class_id=clsd)
+                collegeserializer = CollegeSerializer(college)
+                clseriali = ClassSerializer(clas)
+
+                college_actual_name=collegeserializer.data['name']
+                class_actual_name=str(clseriali.data['sem'])+"--"+str(clseriali.data['dept'])+"--"+str(clseriali.data['sec'])
+                print(class_actual_name)
+                result['new_data']['clg_name']=college_actual_name
+                result['new_data']['class_id']=class_actual_name
+                result['new_data']['user_type']='Faculty'
         else:
-            result['new_data']['user_type']='Faculty'
+          
+            subj = Subject.objects.get(sub_id=result['new_data']['sub_id'])
+            u = User.objects.get(id=result['new_data']['faculty_id'])
+            sseri = SubjectSerializer(subj)
+            sseri2 = UserSerializer(u)
+            clsd= result['new_data']['class_id']
+            clas = Class.objects.get(class_id=clsd)
+            clseriali = ClassSerializer(clas)
+            class_actual_name=str(clseriali.data['sem'])+"--"+str(clseriali.data['dept'])+"--"+str(clseriali.data['sec'])
 
+            result['new_data']['class_id']=class_actual_name
+            result['new_data']['sub_id']=sseri.data['name']
+            result['new_data']['faculty_id']=sseri2.data['name']
+            queryset = Topic.objects.filter(
+                
+                LessonPlan_id="2"
+
+            )
+
+            serializertop = TopicSerializer(queryset, many=True)
+            if serializertop.is_valid:
+                print(serializertop.data)
+            rt=[]
+            for i in serializertop.data:
+                print(i['id'])
+                print("-------------")
+                rt.append(i)
+
+            result['topics']=rt
 
         return Response(result)
 
